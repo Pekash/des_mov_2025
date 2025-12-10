@@ -1,79 +1,151 @@
 import 'package:flutter/material.dart';
+import 'pages/home_page.dart';
+import 'pages/authors_page.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isDarkMode = true;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(title: const Text('Mi App')),
-          body: const TabBarView(
-            children: [SettingsPage(), ProfilePage()],
-          ),
-          bottomNavigationBar: const TabBar(
-            tabs: [
-              Tab(icon: Icon(Icons.settings), text: 'Settings'),
-              Tab(icon: Icon(Icons.person), text: 'Profile'),
-            ],
-          ),
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Color(0xFF8B4513),
+        scaffoldBackgroundColor: Color(0xFFFFF8DC),
+        colorScheme: ColorScheme.light(
+          primary: Color(0xFF8B4513),
+          secondary: Color(0xFFDEB887),
         ),
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Color(0xFF8B4513),
+        scaffoldBackgroundColor: Color(0xFF2C1810),
+        colorScheme: ColorScheme.dark(
+          primary: Color(0xFF8B4513),
+          secondary: Color(0xFF3E2723),
+        ),
+      ),
+      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      home: LibraryHome(
+        isDarkMode: isDarkMode,
+        onThemeChanged: () {
+          setState(() {
+            isDarkMode = !isDarkMode;
+          });
+        },
       ),
     );
   }
 }
 
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+class LibraryHome extends StatefulWidget {
+  final bool isDarkMode;
+  final VoidCallback onThemeChanged;
+
+  const LibraryHome({
+    super.key,
+    required this.isDarkMode,
+    required this.onThemeChanged,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 200,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              Container(width: 120, margin: EdgeInsets.all(4), decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/13be95147b920e7c4ee958ff30db7a11.jpg'), fit: BoxFit.cover), borderRadius: BorderRadius.circular(12))),
-              Container(width: 120, margin: EdgeInsets.all(4), decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/free-video-2235844.jpg'), fit: BoxFit.cover), borderRadius: BorderRadius.circular(12))),
-              Container(width: 120, margin: EdgeInsets.all(4), decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/istockphoto-1235367885-612x612.jpg'), fit: BoxFit.cover), borderRadius: BorderRadius.circular(12))),
-              Container(width: 120, margin: EdgeInsets.all(4), decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/pexels-oleksandr-kobuta-152146753-33746598.jpg'), fit: BoxFit.cover), borderRadius: BorderRadius.circular(12))),
-            ],
-          ),
-        ),
-        Expanded(
-          child: ListView(
-            children: [
-              Container(height: 200, margin: EdgeInsets.all(4), decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/sunlight-eyes-7680x4320-v0-ks41i.jpg'), fit: BoxFit.cover), borderRadius: BorderRadius.circular(12))),
-              Container(height: 200, margin: EdgeInsets.all(4), decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/Screenshot_1.png'), fit: BoxFit.cover), borderRadius: BorderRadius.circular(12))),
-              Container(height: 200, margin: EdgeInsets.all(4), decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/GdkVrIbXEAAz86i.jpg'), fit: BoxFit.cover), borderRadius: BorderRadius.circular(12))),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+  State<LibraryHome> createState() => _LibraryHomeState();
 }
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class _LibraryHomeState extends State<LibraryHome> {
+  int currentIndex = 0;
+  PageController pageController = PageController(initialPage: 0);
+
+  final List<Widget> pages = [HomePage(), AuthorsPage()];
+
+  void onPageChanged(int index) {
+    setState(() {
+      currentIndex = index;
+    });
+  }
+
+  void onNavigationTap(int index) {
+    pageController.animateToPage(
+      index,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.ease,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircleAvatar(radius: 50, backgroundImage: AssetImage('assets/images/kenny.jpg')),
-          SizedBox(height: 20),
-          Text('Kenny', style: TextStyle(fontSize: 24)),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Librería'),
+        actions: [
+          IconButton(
+            icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+            onPressed: widget.onThemeChanged,
+          ),
+        ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.book, size: 60, color: Colors.white),
+                  SizedBox(height: 10),
+                  Text(
+                    'Librería',
+                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text('Inicio'),
+              onTap: () {
+                onNavigationTap(0);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text('Autores'),
+              onTap: () {
+                onNavigationTap(1);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+      body: PageView(
+        controller: pageController,
+        onPageChanged: onPageChanged,
+        children: pages,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        onTap: onNavigationTap,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Libros'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Autores'),
         ],
       ),
     );
