@@ -2,16 +2,17 @@ class Book {
   final String title;
   final String author;
   final String image;
+  final int? apiId;
 
-  Book(this.title, this.author, this.image);
+  Book(this.title, this.author, this.image, {this.apiId});
 }
 
 List<Book> books = [
-  Book('A Game of Thrones', 'George R.R. Martin', 'assets/images/agameofthrones.jpg'),
-  Book('A Clash of Kings', 'George R.R. Martin', 'assets/images/aclashofkings.jpg'),
-  Book('A Storm of Swords', 'George R.R. Martin', 'assets/images/astormofswords.jpg'),
-  Book('A Feast for Crows', 'George R.R. Martin', 'assets/images/afeastforcrows.jpg'),
-  Book('A Dance with Dragons', 'George R.R. Martin', 'assets/images/adancewithdragons.jpg'),
+  Book('A Game of Thrones', 'George R.R. Martin', 'assets/images/agameofthrones.jpg', apiId: 1),
+  Book('A Clash of Kings', 'George R.R. Martin', 'assets/images/aclashofkings.jpg', apiId: 2),
+  Book('A Storm of Swords', 'George R.R. Martin', 'assets/images/astormofswords.jpg', apiId: 3),
+  Book('A Feast for Crows', 'George R.R. Martin', 'assets/images/afeastforcrows.jpg', apiId: 5),
+  Book('A Dance with Dragons', 'George R.R. Martin', 'assets/images/adancewithdragons.jpg', apiId: 8),
   Book('The Colour Out of Space', 'H.P. Lovecraft', 'assets/images/colouroutofspace.jpg'),
   Book('Dagon', 'H.P. Lovecraft', 'assets/images/dagon.jpg'),
   Book('The Call of Cthulhu', 'H.P. Lovecraft', 'assets/images/callofcthulhu.jpg'),

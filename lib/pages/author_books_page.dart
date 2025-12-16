@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/books_data.dart';
+import 'book_detail_page.dart';
 
 class AuthorBooksPage extends StatelessWidget {
   final String authorName;
@@ -8,33 +9,21 @@ class AuthorBooksPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Book> filteredBooks = books.where((book) => book.author == authorName).toList();
+    final filteredBooks = books.where((b) => b.author == authorName).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(authorName),
-      ),
+      appBar: AppBar(title: Text(authorName)),
       body: Padding(
         padding: EdgeInsets.all(16),
         child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: 0.6,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 0.6, crossAxisSpacing: 10, mainAxisSpacing: 10),
           itemCount: filteredBooks.length,
-          itemBuilder: (context, index) {
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                image: DecorationImage(
-                  image: AssetImage(filteredBooks[index].image),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            );
-          },
+          itemBuilder: (context, i) => GestureDetector(
+            onTap: filteredBooks[i].apiId != null ? () => Navigator.push(context, MaterialPageRoute(builder: (context) => BookDetailPage(bookId: filteredBooks[i].apiId!, bookTitle: filteredBooks[i].title, bookImage: filteredBooks[i].image))) : null,
+            child: Container(
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), image: DecorationImage(image: AssetImage(filteredBooks[i].image), fit: BoxFit.cover)),
+            ),
+          ),
         ),
       ),
     );
